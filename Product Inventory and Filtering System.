@@ -1,0 +1,74 @@
+//Create products collection and insert multiple product documents
+db.products.insertMany([
+  {
+    name: "Laptop",
+    category: "Electronics",
+    price: 55000,
+    quantity: 10,
+    rating: 4.5
+  },
+  {
+    name: "Smartphone",
+    category: "Electronics",
+    price: 15000,
+    quantity: 25,
+    rating: 4.3
+  },
+  {
+    name: "Headphones",
+    category: "Accessories",
+    price: 1200,
+    quantity: 50,
+    rating: 4.1
+  },
+  {
+    name: "Office Chair",
+    category: "Furniture",
+    price: 7000,
+    quantity: 15,
+    rating: 4.0
+  },
+  {
+    name: "Backpack",
+    category: "Accessories",
+    price: 800,
+    quantity: 40,
+    rating: 3.9
+  }
+]);
+
+//Retrieve products belonging to a specific category
+db.products.find({ category: "Electronics" });
+
+//Find products within a price range (500–2000)
+db.products.find({
+  price: { $gte: 500, $lte: 2000 }
+});
+
+//Sort products by rating in descending order
+db.products.find().sort({ rating: -1 });
+
+//Update quantity for multiple products using
+db.products.updateMany(
+  { category: "Electronics" },
+  { $inc: { quantity: 10 } }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
