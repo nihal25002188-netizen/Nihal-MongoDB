@@ -1,0 +1,89 @@
+//Design collections
+//users
+{
+  _id: ObjectId(),
+  name: "Amit Kumar",
+  email: "amit@example.com"
+}
+//posts
+{
+  _id: ObjectId(),
+  title: "MongoDB Basics",
+  content: "Introduction to MongoDB...",
+  userId: ObjectId("USER_ID"),
+  comments: [
+    {
+      userId: ObjectId("USER_ID"),
+      comment: "Great post!",
+      date: new Date()
+    }
+  ]
+}
+
+//Insert sample documents maintaining relationships
+//Insert users
+db.users.insertMany([
+  { _id: ObjectId("64a1"), name: "Amit Kumar", email: "amit@example.com" },
+  { _id: ObjectId("64a2"), name: "Neha Singh", email: "neha@example.com" }
+]);
+
+//Insert posts with embedded comments
+db.posts.insertMany([
+  {
+    title: "MongoDB Basics",
+    content: "Introduction to MongoDB...",
+    userId: ObjectId("64a1"),
+    comments: [
+      {
+        userId: ObjectId("64a2"),
+        comment: "Very helpful!",
+        date: new Date()
+      }
+    ]
+  },
+  {
+    title: "NoSQL vs SQL",
+    content: "Comparison article...",
+    userId: ObjectId("64a2"),
+    comments: []
+  }
+]);
+
+//Retrieve all posts along with their comments
+db.posts.find();
+
+//Add a new comment to a post using embedding
+db.posts.updateOne(
+  { title: "MongoDB Basics" },
+  {
+    $push: {
+      comments: {
+        userId: ObjectId("64a1"),
+        comment: "Thanks for sharing!",
+        date: new Date()
+      }
+    }
+  }
+);
+
+//Embedding vs Referencing (Explanation & Justification)
+comments: {
+  _id: ObjectId(),
+  postId: ObjectId(),
+  userId: ObjectId(),
+  comment: "Nice post!",
+  date: new Date()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
