@@ -1,0 +1,73 @@
+//Create students collection and insert one student document
+db.students.insertOne({
+  name: "Rahul Sharma",
+  age: 20,
+  department: "Computer Science",
+  marks: 85,
+  city: "Bangalore"
+});
+
+//Insert at least 5 student records using insertMany()
+db.students.insertMany([
+  {
+    name: "Anjali Mehta",
+    age: 19,
+    department: "Electronics",
+    marks: 78,
+    city: "Mumbai"
+  },
+  {
+    name: "Vikram Singh",
+    age: 21,
+    department: "Mechanical",
+    marks: 82,
+    city: "Delhi"
+  },
+  {
+    name: "Priya Nair",
+    age: 20,
+    department: "Civil",
+    marks: 88,
+    city: "Chennai"
+  },
+  {
+    name: "Arjun Reddy",
+    age: 22,
+    department: "Computer Science",
+    marks: 91,
+    city: "Hyderabad"
+  },
+  {
+    name: "Sneha Patil",
+    age: 19,
+    department: "Information Technology",
+    marks: 76,
+    city: "Pune"
+  }
+]);
+
+//Retrieve all student records using find()
+db.students.find();
+
+//Display only name and marks using projection
+db.students.find({}, { name: 1, marks: 1, _id: 0 });
+
+
+//Delete a student document based on name
+db.students.deleteOne({ name: "Rahul Sharma" });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
