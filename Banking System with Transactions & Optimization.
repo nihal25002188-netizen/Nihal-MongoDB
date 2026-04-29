@@ -1,0 +1,115 @@
+//Create accounts collection and insert account documents
+db.accounts.insertMany([
+  {
+    accountNumber: 1001,
+    holderName: "Ravi Kumar",
+    balance: 5000,
+    transactions: []
+  },
+  {
+    accountNumber: 1002,
+    holderName: "Anita Sharma",
+    balance: 8000,
+    transactions: []
+  }
+]);
+
+// Deposit and Withdrawal operations using update queries
+//Deposit
+db.accounts.updateOne(
+  { accountNumber: 1001 },
+  {
+    $inc: { balance: 2000 },
+    $push: {
+      transactions: {
+        type: "deposit",
+        amount: 2000,
+        date: new Date()
+      }
+    }
+  }
+);
+//Withdrawal
+db.accounts.updateOne(
+  { accountNumber: 1001, balance: { $gte: 1000 } }, // ensure sufficient balance
+  {
+    $inc: { balance: -1000 },
+    $push: {
+      transactions: {
+        type: "withdrawal",
+        amount: 1000,
+        date: new Date()
+      }
+    }
+  }
+);
+
+
+//Implement fund transfer between two accounts
+const session = db.getMongo().startSession();
+
+session.startTransaction();
+
+try {
+  const accounts = session.getDatabase("test").accounts;
+
+  // Debit from sender
+  accounts.updateOne(
+    { accountNumber: 1001, balance: { $gte: 1000 } },
+    {
+      $inc: { balance: -1000 },
+      $push: {
+        transactions: {
+          type: "transfer_out",
+          amount: 1000,
+          to: 1002,
+          date: new Date()
+        }
+      }
+    }
+  );
+
+  // Credit to receiver
+  accounts.updateOne(
+    { accountNumber: 1002 },
+    {
+      $inc: { balance: 1000 },
+      $push: {
+        transactions: {
+          type: "transfer_in",
+          amount: 1000,
+          from: 1001,
+          date: new Date()
+        }
+      }
+    }
+  );
+
+  session.commitTransaction();
+} catch (error) {
+  session.abortTransaction();
+}
+
+//Ensure atomicity of the transaction process
+MongoDB transactions (using session.startTransaction()) ensure:
+All operations succeed OR none are applied
+Prevents partial updates (e.g., money deducted but not credited)
+
+Key idea:
+
+If any step fails → abortTransaction()
+If all succeed → commitTransaction()
+
+This guarantees ACID properties, especially atomicity and consistency.
+
+//Create an index on accountNumber and analyze performance
+//Create index
+db.accounts.createIndex({ accountNumber: 1 });
+//Analyze query performance
+db.accounts.find({ accountNumber: 1001 }).explain("executionStats");
+
+
+
+
+
+
